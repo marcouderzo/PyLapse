@@ -7,7 +7,8 @@ A Python Script for Timelapse Feature for Art Applications
 
 Requires: 
 - ffmpeg
-- Python
+- Python3
+- Python3 Pillow/ImageGrab library
 
 ## What is it
 
