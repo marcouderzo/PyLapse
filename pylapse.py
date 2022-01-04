@@ -5,43 +5,50 @@ from datetime import datetime
 
 
 
-
+def getNumberOfFrames(dir):
+    list = os.listdir(dir)
+    return len(list)
 
 def init():
-    mode = input("Please select Run Mode. Type: < capture > to start taking frames, < create > to compile the final timelapse. >> ")
-    retargs=["a", "a", "a", "a"]
-    if mode == "capture":
-        relPath=input("Type Output Folder Name >> ") + '/'
-        cooldownTime=input("Type Time Interval Between Frames (seconds) >> ")
-        retargs[1]= relPath
-        retargs[2]= int(cooldownTime)
-    if mode == "create":
-        fps = input("Type Desired Framerate >> ")  
-        retargs[3]= int(fps)
+    args=["", "", "", "", ""]    
+    args[0] = input("Please select Run Mode. Type: < capture > to start taking frames, < create > to compile the final timelapse. >> ")
+    args[1]=input("Type Output Folder Name >> ") + '/'
+    if args[0] == "capture":
 
-    retargs[0]= mode
-    return retargs
+        args[2]=int(input("Type Time Interval Between Frames (seconds) >> "))
+    if args[0] == "create":
+        args[3] = int(input("Type Desired Framerate >> "))
+    args[4]= getNumberOfFrames(args[1])
+    return args
 
 
-def saveFrame(relPath):
+def saveFrame(relPath, index):
     im = ImageGrab.grab()
     dt = datetime.now()
-    fname = "frame_{}.{}.png".format(dt.strftime("%d-%m-%Y %H:%M:%S"), dt.microsecond // 100000)
+    fname = "frame_{}.png".format(index)
     im.save(relPath+fname, 'png')
+    return index+1
 
     
 
 # Main
 
-
-
 args = init()
 
-if args[0] == "capture":
-    print("From Now, Every " + str(args[2]) + " Seconds a Screenshot Will Be Saved.")
+mode = args[0]
+relativePath = args[1]
+numberOfFrames = args[4]
+
+
+if mode == "capture":
+
+    cooldownTime = args[2]
+    print("From Now, Every " + str(cooldownTime) + " Seconds a Screenshot Will Be Saved.")
     while True:
-        saveFrame(args[1])
+        numberOfFrames = saveFrame(relativePath, numberOfFrames)
         time.sleep(args[2])
 
-if args[0] == "create":
-    os.system('ffmpeg -framerate %d -i %s -c:v libx264 -r 20 -pix_fmt yuv420p %s/%d.mp4' % (args[3],"png", "space",int(time.time())))
+
+if mode == "create":
+    outFrameRate = int(args[3])
+    os.system('ffmpeg -y -framerate 1 -i %s/frame*.png -r 5 -c:v libx264 -pix_fmt yuv420p %s/timelapse.mp4' % (relativePath, outFrameRate, relativePath))
