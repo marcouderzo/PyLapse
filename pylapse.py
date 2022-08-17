@@ -11,7 +11,7 @@ def getNumberOfFrames(dir):
 
 def init():
     args=["", "", "", "", ""]    
-    args[0] = input("Please select Run Mode. Type: < capture > to start taking frames, < create > to compile the final timelapse. >> ")
+    args[0] = input("Please select Run Mode. Type: < capture > to start taking frames. >> ")
     args[1]=input("Type Output Folder Name >> ") + '/'
     if args[0] == "capture":
 
@@ -51,4 +51,5 @@ if mode == "capture":
 
 if mode == "create":
     outFrameRate = int(args[3])
-    os.system('ffmpeg -y -framerate 1 -i %s/frame*.png -r 5 -c:v libx264 -pix_fmt yuv420p %s/timelapse.mp4' % (relativePath, outFrameRate, relativePath))
+    print("This mode is unsupported as of right now.")
+    #os.system('ffmpeg -y -framerate 1 -i %s/frame*.png -r 5 -c:v libx264 -pix_fmt yuv420p %s/timelapse.mp4' % (relativePath, outFrameRate, relativePath))
