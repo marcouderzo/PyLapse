@@ -10,15 +10,10 @@ def getNumberOfFrames(dir):
     return len(list)
 
 def init():
-    args=["", "", "", "", ""]    
-    args[0] = input("Please select Run Mode. Type: < capture > to start taking frames. >> ")
-    args[1]=input("Type Output Folder Name >> ") + '/'
-    if args[0] == "capture":
-
-        args[2]=int(input("Type Time Interval Between Frames (seconds) >> "))
-    if args[0] == "create":
-        args[3] = int(input("Type Desired Framerate >> "))
-    args[4]= getNumberOfFrames(args[1])
+    args=["", "", "", ""]    
+    args[0]=input("Type Output Folder Name >> ") + '/'
+    args[1]=int(input("Type Time Interval Between Frames (seconds) >> "))
+    args[2]= getNumberOfFrames(args[0])
     return args
 
 
@@ -29,27 +24,21 @@ def saveFrame(relPath, index):
     im.save(relPath+fname, 'png')
     return index+1
 
-    
+
+
+
 
 # Main
 
-args = init()
-
-mode = args[0]
-relativePath = args[1]
-numberOfFrames = args[4]
-
-
-if mode == "capture":
-
-    cooldownTime = args[2]
+def main():
+    args = init()
+    relativePath = args[0]
+    cooldownTime = args[1]
     print("From Now, Every " + str(cooldownTime) + " Seconds a Screenshot Will Be Saved.")
     while True:
         numberOfFrames = saveFrame(relativePath, numberOfFrames)
-        time.sleep(args[2])
-
-
-if mode == "create":
-    outFrameRate = int(args[3])
-    print("This mode is unsupported as of right now.")
-    #os.system('ffmpeg -y -framerate 1 -i %s/frame*.png -r 5 -c:v libx264 -pix_fmt yuv420p %s/timelapse.mp4' % (relativePath, outFrameRate, relativePath))
+        time.sleep(cooldownTime)
+        
+if __name__ == "main":
+    main()
+       
